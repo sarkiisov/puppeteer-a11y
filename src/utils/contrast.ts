@@ -1,0 +1,23 @@
+const luminance = (r: number, g: number, b: number) => {
+  const a = [r, g, b].map((v) => {
+    v = v / 255
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)
+  })
+  return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2]
+}
+
+export const contrastRatio = (foreground: string, background: string) => {
+  const parseRGB = (color: string) => {
+    const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
+    if (!m) return [0, 0, 0]
+    return [parseInt(m[1]), parseInt(m[2]), parseInt(m[3])]
+  }
+
+  const [r1, g1, b1] = parseRGB(foreground)
+  const [r2, g2, b2] = parseRGB(background)
+
+  const L1 = luminance(r1, g1, b1)
+  const L2 = luminance(r2, g2, b2)
+
+  return (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05)
+}
