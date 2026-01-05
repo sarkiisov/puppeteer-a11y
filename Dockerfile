@@ -14,7 +14,7 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 
-RUN pnpm install --frozen-lockfile --reporter=silent
+RUN pnpm install --frozen-lockfile --reporter=silent --dangerously-allow-all-builds
 
 COPY tsconfig.json .
 
@@ -22,4 +22,7 @@ COPY src ./src
 
 RUN pnpm build
 
-CMD ["node", "dist/index.js"]
+RUN echo '#!/bin/bash\ncd /app && node dist/index.js "$@"' > /usr/local/bin/pa11y \
+    && chmod +x /usr/local/bin/pa11y
+
+CMD ["sleep", "infinity"]
