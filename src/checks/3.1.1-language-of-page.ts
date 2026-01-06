@@ -2,7 +2,9 @@ import { PageCheck } from '../types'
 import { detectDominantLanguage, getPrimaryLanguage, isSameLanguage } from '../utils/language'
 
 export default {
-  name: '3.1.1 Language of Page',
+  id: '3.1.1',
+  name: 'Language of Page',
+  level: 'A',
   run: async (page) => {
     const htmlLanguage = await page.$eval('html', (element) => element.lang)
 
@@ -27,7 +29,7 @@ export default {
         status: 'REVIEW_NEEDED',
         details: 'Could not detect dominant language from page text',
         recommendations:
-          'Detection failed due to either insufficient text content or unreliable language detection library results. Please manually verify that page content language matches the `<html lang>` attribute'
+          'Detection failed due to either insufficient text content or unreliable language detection library results. Please manually verify that page content language matches the <html lang> attribute'
       }
     }
 
@@ -38,7 +40,7 @@ export default {
           htmlLanguage,
           dominantLanguage
         },
-        recommendations: `Review and align HTML \`lang\` attribute with actual page content language. Choose correct BCP 47 code: \`<html lang="${dominantLanguage}">\` or adjust content to match existing declaration.`
+        recommendations: `Review and align HTML lang attribute with actual page content language. Choose correct BCP 47 code: <html lang="${dominantLanguage}"> or adjust content to match existing declaration.`
       }
     }
 

@@ -1,25 +1,28 @@
 import { PageCheck } from '../types'
 
 export default {
-  name: '1.1.1 Non-text Content',
+  id: '1.1.1',
+  name: 'Non-text Content',
+  level: 'A',
   run: async (page) => {
     const imgsWithoutAlt = await page.$$eval('img', (imgs) =>
       imgs
         .filter((img) => !img.alt || img.alt.trim() === '')
-        .map((element) =>
-          element.id
+        .map((element) => ({
+          src: element.src,
+          selector: element.id
             ? `#${element.id}`
             : element.className
             ? `${element.tagName.toLowerCase()}.${element.className.split(' ').join('.')}`
             : element.tagName.toLowerCase()
-        )
+        }))
     )
 
     if (imgsWithoutAlt.length) {
       return {
         status: 'FAILED',
         details: imgsWithoutAlt,
-        recommendations: `Add the \`alt\` attribute for ${imgsWithoutAlt.length} image(-s). Alt text should briefly and meaningfully describe the content or purpose of the image`
+        recommendations: `Add the alt attribute for ${imgsWithoutAlt.length} image(-s). Alt text should briefly and meaningfully describe the content or purpose of the image`
       }
     }
 

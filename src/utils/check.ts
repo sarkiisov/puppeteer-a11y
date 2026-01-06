@@ -1,44 +1,38 @@
-import { Page } from 'puppeteer-core'
-import { PageCheck, PageCheckStatus } from '../types'
+import { PageCheckResult, RunPageChecks } from '../types'
 
-export const runPageChecks = async (page: Page, checks: PageCheck[]) => {
+/**
+ * Runs a set of accessibility or page checks on a Puppeteer page
+ */
+export const runPageChecks: RunPageChecks = async (page, checks) => {
   return Promise.all(
     checks.map(async (check) => {
       try {
         const result = await check.run(page)
 
         return {
+          id: check.id,
           name: check.name,
+          level: check.level,
           result: result
         }
       } catch (error) {
         return {
+          id: check.id,
           name: check.name,
+          level: check.level,
           result: {
-            status: 'ERROR' as PageCheckStatus,
+            status: 'ERROR',
             details: String(error)
           }
-        }
+        } as PageCheckResult
       }
     })
   ).then((results) => {
-    const summary: Record<PageCheckStatus, number> = {
-      PASSED: 0,
-      FAILED: 0,
-      ERROR: 0,
-      REVIEW_NEEDED: 0
-    }
-
-    results.map(({ result }) => {
-      summary[result.status] = (summary[result.status] || 0) + 1
-    })
+    const url = page.url()
+    const timestamp = new Date()
 
     return {
-      meta: {
-        url: page.url(),
-        timestamp: new Date()
-      },
-      summary,
+      meta: { url, timestamp },
       results
     }
   })

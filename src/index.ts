@@ -18,10 +18,11 @@ program
     const page = await browser.newPage()
 
     await page.goto(url, { waitUntil: 'networkidle2' })
-    console.log(await page.title())
 
     const outputPath = path.resolve(options.output)
+
     await page.screenshot({ path: outputPath })
+
     console.log(`Screenshot saved to ${outputPath}`)
 
     await browser.close()
@@ -36,9 +37,9 @@ program
 
     await page.goto(url, { waitUntil: 'networkidle2' })
 
-    const results = await runPageChecks(page, checks)
+    const pageCheckResults = await runPageChecks(page, checks)
 
-    console.log(JSON.stringify(results, null, 2))
+    console.log(JSON.stringify(pageCheckResults, null, 2))
 
     await browser.close()
   })
