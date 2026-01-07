@@ -4,7 +4,12 @@
     "outDir": "dist",
     "moduleResolution": "nodenext",
     "module": "NodeNext",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": [
+      "vitest/globals",
+      "./src/utils/puppeteer-globals.d.ts",
+      "./src/test-utils/test-globals.d.ts"
+    ]
   },
   "include": ["src"]
 }

@@ -33,3 +33,7 @@ export interface RunPageChecksResult {
 }
 
 export type RunPageChecks = (page: Page, checks: PageCheck[]) => Promise<RunPageChecksResult>
+
+export type Asynchronous<T extends (...args: any[]) => any> = (
+  ...args: Parameters<T>
+) => Promise<Awaited<ReturnType<T>>>

@@ -1,4 +1,4 @@
-import { PageCheck } from '../types'
+import { PageCheck } from '../../types'
 
 export default {
   id: '2.4.2',

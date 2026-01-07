@@ -1,12 +1,15 @@
-import { PageCheck } from '../types'
-import { detectDominantLanguage, getPrimaryLanguage, isSameLanguage } from '../utils/language'
+import { PageCheck } from '../../types'
+import { detectDominantLanguage, getPrimaryLanguage, isSameLanguage } from '../../utils/language'
 
 export default {
   id: '3.1.1',
   name: 'Language of Page',
   level: 'A',
   run: async (page) => {
-    const htmlLanguage = await page.$eval('html', (element) => element.lang)
+    const htmlLanguage = await page.$eval(
+      'html',
+      /* c8 ignore start */ (element) => element.lang /* c8 ignore end */
+    )
 
     if (!htmlLanguage) {
       return {
@@ -17,8 +20,11 @@ export default {
       }
     }
 
-    const texts = await page.$$eval('p, h1, h2, h3, h4, h5, h6, li, span, div', (els) =>
-      els.map((el) => el.innerText).filter((t) => t.trim().length > 0)
+    const texts = await page.$$eval(
+      'p, h1, h2, h3, h4, h5, h6, li, span, div',
+      /* c8 ignore start */ (elements) =>
+        elements.map((element) => element.innerText).filter((t) => t.trim().length > 0)
+      /* c8 ignore end */
     )
 
     const primaryHtmlLanguage = getPrimaryLanguage(htmlLanguage)
