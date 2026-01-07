@@ -1,10 +1,8 @@
+import path from 'node:path'
+
 import { program } from 'commander'
 import { launchBrowser } from './browser'
-
-import path from 'path'
-
 import { runPageChecks } from './utils/check'
-
 import checks from './checks'
 
 program.name('puppeteer-a11y')

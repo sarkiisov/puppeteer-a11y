@@ -1,25 +1,33 @@
-import { PageCheck } from '../types'
-import { detectDominantLanguage, getPrimaryLanguage, isSameLanguage } from '../utils/language'
+import { ElementHandle } from 'puppeteer-core'
+import { PageCheck } from '../../types'
+import { detectDominantLanguage, getPrimaryLanguage, isSameLanguage } from '../../utils/language'
+import { getElementSelector } from '../../utils/puppeteer'
 
 export default {
   id: '3.1.2',
   name: 'Language of Parts',
   level: 'AA',
   run: async (page) => {
-    const elementsWithLang = await page.$$eval('[lang]:not(html)', (elements) =>
-      elements
-        .map((element) => ({
-          tag: element.tagName.toLowerCase(),
-          lang: element.getAttribute('lang'),
-          text: element.textContent?.trim() ?? '',
-          selector: element.id
-            ? `#${element.id}`
-            : element.className
-            ? `${element.tagName.toLowerCase()}.${element.className.split(' ').join('.')}`
-            : element.tagName.toLowerCase()
-        }))
-        .filter((element) => element.lang && element.text.length > 0)
+    await page.exposeFunction('getElementSelector', getElementSelector)
+
+    const elementsWithLang = await page.$$eval(
+      '[lang]:not(html)',
+      /* c8 ignore start */ async (elements) => {
+        const results = await Promise.all(
+          elements.map(async (element) => {
+            return {
+              lang: element.getAttribute('lang'),
+              text: String(element.textContent),
+              selector: await window.getElementSelector(element as unknown as ElementHandle)
+            }
+          })
+        )
+
+        return results.filter((item) => item.lang && item.text.length > 0)
+      } /* c8 ignore end */
     )
+
+    await page.removeExposedFunction('getElementSelector')
 
     if (elementsWithLang.length === 0) {
       return {
@@ -31,7 +39,7 @@ export default {
     const issues: Array<{
       declaredLanguage: string
       detectedLanguage: string | null
-      textSample: string
+      text: string
       selector: string
     }> = []
 
@@ -41,20 +49,18 @@ export default {
 
       if (!detectedLanguage) {
         issues.push({
+          ...element,
           declaredLanguage,
-          detectedLanguage: null,
-          textSample: `${element.text.slice(0, 100)}${element.text.length > 100 ? '...' : ''}`,
-          selector: element.selector
+          detectedLanguage: null
         })
         continue
       }
 
       if (!isSameLanguage(declaredLanguage, detectedLanguage)) {
         issues.push({
+          ...element,
           declaredLanguage,
-          detectedLanguage,
-          textSample: `${element.text.slice(0, 100)}${element.text.length > 100 ? '...' : ''}`,
-          selector: element.selector
+          detectedLanguage
         })
       }
     }
