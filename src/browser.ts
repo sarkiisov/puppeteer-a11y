@@ -6,6 +6,10 @@ export const launchBrowser = () => {
     executablePath: env.PUPPETEER_EXECUTABLE_PATH,
     headless: env.PUPPETEER_HEADLESS,
     timeout: env.PUPPETEER_TIMEOUT_MS,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    defaultViewport: {
+      width: env.PUPPETEER_WIDTH,
+      height: env.PUPPETEER_HEIGHT
+    }
   })
 }

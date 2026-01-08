@@ -27,7 +27,9 @@ describe('WCAG 1.4.4 – Resize Text', () => {
 
     expect(result.status).toBe('FAILED')
     expect(result.details).toHaveLength(1)
-    expect((result.details[0] as { text: string; selector: string }).selector).toBe('#clipped-text')
+    expect((result.details[0] as { text: string; selector: string }).selector).toBe(
+      'p#clipped-text'
+    )
   })
 
   it('PASSED when text resizes without clipping', async () => {
@@ -67,7 +69,7 @@ describe('WCAG 1.4.4 – Resize Text', () => {
 
     expect(result.status).toBe('FAILED')
     expect(result.details).toEqual(
-      expect.arrayContaining([expect.objectContaining({ selector: '#heading-clipped' })])
+      expect.arrayContaining([expect.objectContaining({ selector: 'h1#heading-clipped' })])
     )
   })
 })

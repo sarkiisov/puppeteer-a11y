@@ -1,4 +1,6 @@
+import { ElementHandle } from 'puppeteer-core'
 import { PageCheck } from '../../types'
+import { getElementSelector } from '../../utils/puppeteer'
 
 export default {
   id: '1.4.4',
@@ -10,6 +12,8 @@ export default {
         document.body.style.zoom = '2'
       } /* c8 ignore end */
     )
+
+    await page.exposeFunction('getElementSelector', getElementSelector)
 
     const problematicElements = await page.$$eval(
       'p, span, a, li, h1, h2, h3, h4, h5, h6, button, label',
@@ -60,11 +64,7 @@ export default {
             if (isOverflown || isClipped) {
               return {
                 text: element.textContent,
-                selector: element.id
-                  ? `#${element.id}`
-                  : element.className
-                  ? `${element.tagName.toLowerCase()}.${element.className.split(' ').join('.')}`
-                  : element.tagName.toLowerCase()
+                selector: await window.getElementSelector(element as unknown as ElementHandle)
               }
             }
 
@@ -76,6 +76,8 @@ export default {
       }
       /* c8 ignore end */
     )
+
+    await page.removeExposedFunction('getElementSelector')
 
     if (problematicElements.length > 0) {
       return {
