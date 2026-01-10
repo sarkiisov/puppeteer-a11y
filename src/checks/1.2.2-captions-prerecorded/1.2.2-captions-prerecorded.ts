@@ -33,13 +33,15 @@ export default {
         status: 'REVIEW_NEEDED',
         details: videosWithoutCaptions,
         recommendations:
-          'Video elements must have HTML native captions for prerecorded audio content'
+          'Video elements must have HTML built-in captions for prerecorded audio content'
       }
     }
 
     return {
-      status: 'PASSED',
-      details: 'All videos with audio have HTML native captions'
+      status: 'REVIEW_NEEDED',
+      details: 'All videos with audio have HTML built-in captions',
+      recommendations:
+        'Manual review is needed to confirm that the captions provide full and accurate accessibility for the video(-s)'
     }
   }
 } satisfies PageCheck

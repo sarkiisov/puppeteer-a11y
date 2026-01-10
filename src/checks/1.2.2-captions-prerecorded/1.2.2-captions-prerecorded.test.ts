@@ -52,7 +52,7 @@ describe('WCAG 1.2.2 – Captions (Prerecorded)', () => {
 
     const result = await check.run(page)
 
-    expect(result.status).toBe('PASSED')
+    expect(result.status).toBe('REVIEW_NEEDED')
   })
 
   it('ignores non-captions tracks (subtitles only)', async () => {
