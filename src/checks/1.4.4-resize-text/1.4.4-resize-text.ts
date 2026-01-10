@@ -79,6 +79,12 @@ export default {
 
     await page.removeExposedFunction('getElementSelector')
 
+    await page.evaluate(
+      /* c8 ignore start */ () => {
+        document.body.style.zoom = '1'
+      } /* c8 ignore end */
+    )
+
     if (problematicElements.length > 0) {
       return {
         status: 'FAILED',

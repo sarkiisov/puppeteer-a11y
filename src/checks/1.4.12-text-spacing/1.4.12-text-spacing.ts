@@ -7,7 +7,7 @@ export default {
   name: 'Text Spacing',
   level: 'AA',
   run: async (page) => {
-    await page.addStyleTag({
+    const styleTag = await page.addStyleTag({
       content: `
         * {
           line-height: 1.5 !important;
@@ -84,6 +84,8 @@ export default {
     )
 
     await page.removeExposedFunction('getElementSelector')
+
+    await styleTag.dispose()
 
     if (problematicElements.length > 0) {
       return {
